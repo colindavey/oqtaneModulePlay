@@ -75,6 +75,7 @@ else
             await logger.LogInformation("Todo Copied {NewTodo}", NewTodo);
             await JSRuntime.InvokeVoidAsync("console.log", "Copy after");
             await JSRuntime.InvokeVoidAsync("console.log", NewTodo);
+            _Todos = await TodoService.GetTodosAsync(ModuleState.ModuleId);
             StateHasChanged();
         }
         catch (Exception ex)
