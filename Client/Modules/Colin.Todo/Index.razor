@@ -63,8 +63,26 @@ else
     private async Task Copy(Todo Todo)
     //    private async Task Copy()
     {
-        await JSRuntime.InvokeVoidAsync("console.log", "Copy");
+        await JSRuntime.InvokeVoidAsync("console.log", "Copy before");
         await JSRuntime.InvokeVoidAsync("console.log", Todo);
+
+        try
+        {
+            Todo NewTodo = new Todo();
+            NewTodo.ModuleId = ModuleState.ModuleId;
+            NewTodo.Name = Todo.Name;
+            NewTodo = await TodoService.AddTodoAsync(NewTodo);
+            await logger.LogInformation("Todo Copied {NewTodo}", NewTodo);
+            await JSRuntime.InvokeVoidAsync("console.log", "Copy after");
+            await JSRuntime.InvokeVoidAsync("console.log", NewTodo);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await logger.LogError(ex, "Error Copying Todo {Todo} {Error}", Todo, ex.Message);
+            //            AddModuleMessage(Localizer["Message.DeleteError"], MessageType.Error);
+            AddModuleMessage("Error Copying Todo", MessageType.Error);
+        }
     }
 
     private async Task Delete(Todo Todo)
